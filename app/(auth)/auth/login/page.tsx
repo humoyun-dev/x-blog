@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import { signIn, getSession } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -34,6 +35,9 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,22 +51,22 @@ export default function LoginPage() {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post("/api/auth/login", {
+      const result = await signIn("credentials", {
         email: values.email,
         password: values.password,
+        redirect: false,
       });
 
-      if (response.data.success) {
-        router.push("/");
+      if (result?.error) {
+        setError("Invalid email or password. Please try again.");
+      } else if (result?.ok) {
+        await getSession();
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.error ||
-        err.message ||
-        "An unexpected error occurred. Please try again.";
-      setError(errorMessage);
       console.error("Login error:", err);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -73,18 +77,19 @@ export default function LoginPage() {
       setIsGoogleLoading(true);
       setError(null);
 
-      const response = await axios.post("/api/auth/google");
+      const result = await signIn("google", {
+        callbackUrl,
+        redirect: false,
+      });
 
-      if (response.data.success) {
-        router.push("/");
-        router.refresh();
+      if (result?.error) {
+        setError("Failed to sign in with Google. Please try again.");
+      } else if (result?.url) {
+        router.push(result.url);
       }
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.error ||
-        "Failed to sign in with Google. Please try again.";
-      setError(errorMessage);
       console.error("Google sign-in error:", err);
+      setError("Failed to sign in with Google. Please try again.");
     } finally {
       setIsGoogleLoading(false);
     }

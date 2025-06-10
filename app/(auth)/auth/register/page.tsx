@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 const formSchema = z
   .object({
@@ -72,19 +73,19 @@ export default function RegisterPage() {
       if (registerResponse.data.success) {
         setSuccess("Account created successfully! Signing you in...");
 
-        // Auto sign-in after successful registration
-        const loginResponse = await axios.post("/api/auth/login", {
+        const result = await signIn("credentials", {
           email: values.email,
           password: values.password,
+          redirect: false,
         });
 
-        if (loginResponse.data.success) {
-          router.push("/");
-          router.refresh();
-        } else {
+        if (result?.error) {
           setError(
             "Account created but sign-in failed. Please try signing in manually.",
           );
+        } else if (result?.ok) {
+          router.push("/");
+          router.refresh();
         }
       }
     } catch (err: any) {
@@ -104,18 +105,19 @@ export default function RegisterPage() {
       setIsGoogleLoading(true);
       setError(null);
 
-      const response = await axios.post("/api/auth/google");
+      const result = await signIn("google", {
+        callbackUrl: "/",
+        redirect: false,
+      });
 
-      if (response.data.success) {
-        router.push("/");
-        router.refresh();
+      if (result?.error) {
+        setError("Failed to sign in with Google. Please try again.");
+      } else if (result?.url) {
+        router.push(result.url);
       }
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.error ||
-        "Failed to sign in with Google. Please try again.";
-      setError(errorMessage);
       console.error("Google sign-in error:", err);
+      setError("Failed to sign in with Google. Please try again.");
     } finally {
       setIsGoogleLoading(false);
     }
