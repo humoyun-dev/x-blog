@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="50c76ef5-0065-4ecb-974b-9a6d71896f42" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/(auth)/auth/login/form.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/(root)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(privacy-and-terms)/privacy/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(privacy-and-terms)/terms/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +87,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749491727765</updated>
-      <workItem from="1749491729525" duration="34904000" />
+      <workItem from="1749491729525" duration="38304000" />
+      <workItem from="1749826224156" duration="2000" />
+      <workItem from="1750019965704" duration="162000" />
+      <workItem from="1750523879848" duration="2000" />
+      <workItem from="1750779877086" duration="4000" />
+      <workItem from="1751045690737" duration="4000" />
+      <workItem from="1751300392093" duration="389000" />
     </task>
     <servers />
   </component>
